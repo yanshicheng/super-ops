@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     # 内部
     'apps.user.apps.UserConfig',
     'apps.permission.apps.PermissionConfig',
+    'apps.cmdb.apps.CmdbConfig',
 
     # 第三方
     'rest_framework',

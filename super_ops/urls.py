@@ -21,12 +21,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
-# from rbac.router import router as prem_router
-# from user.router import router as user_router
+from apps.permission.router import router as prem_router
+from apps.user.router import router as user_router
+from apps.cmdb.router import router as cmdb_router
 
 router = routers.DefaultRouter()
-# router.registry.extend(prem_router.registry)
-# router.registry.extend(user_router.registry)
+router.registry.extend(prem_router.registry)
+router.registry.extend(user_router.registry)
+router.registry.extend(cmdb_router.registry)
 
 urlpatterns += [
     path('api/', include(router.urls)),
@@ -36,8 +38,7 @@ urlpatterns += [
 from base.rest_framework_jwt import obtain_jwt_token
 from base.rest_framework_jwt import refresh_jwt_token
 from base.rest_framework_jwt import verify_jwt_token
-# from rbac import url as rbac_url
-# from user import urls as user_url
+from apps.permission import urls as rbac_url
 from django.conf import settings
 from django.views.static import serve
 
@@ -47,7 +48,7 @@ urlpatterns += [
     path('api/v1/user/login/', obtain_jwt_token),
     path('api/v1/token-refresh/', refresh_jwt_token),
     path('api/v1/token-verify/', verify_jwt_token),
-    # path('api/', include(rbac_url)),
+    path('api/', include(rbac_url)),
     # path('api/', include(user_url)),
 
 ]
