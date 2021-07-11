@@ -12,7 +12,7 @@ def json_api_response(code, data, message):
 
 
 def json_ok_response(data='success'):
-    return json_api_response(code=2000, data=data, message=None)
+    return json_api_response(code=0, data=data, message=None)
 
 
 def json_error_response(message):

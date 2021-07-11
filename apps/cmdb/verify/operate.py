@@ -177,7 +177,7 @@ class OperateInstance:
                     data['data'] = []
                 l_c.append(data)
             return l_c
-        return None
+        return []
 
     def get_c_bind_asset(id, cid):
         """通过子资产ID 和 分类ID 查询关联下 所有的数据"""
@@ -201,7 +201,7 @@ class OperateInstance:
                     data['data'] = []
                 l_c.append(data)
             return l_c
-        return None
+        return []
 
     @staticmethod
     def get_p_classify_bind(pid):

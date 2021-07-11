@@ -39,6 +39,7 @@ from base.rest_framework_jwt import obtain_jwt_token
 from base.rest_framework_jwt import refresh_jwt_token
 from base.rest_framework_jwt import verify_jwt_token
 from apps.permission import urls as rbac_url
+from apps.user import urls as user_url
 from django.conf import settings
 from django.views.static import serve
 
@@ -49,6 +50,6 @@ urlpatterns += [
     path('api/v1/token-refresh/', refresh_jwt_token),
     path('api/v1/token-verify/', verify_jwt_token),
     path('api/', include(rbac_url)),
-    # path('api/', include(user_url)),
+    path('api/', include(user_url)),
 
 ]

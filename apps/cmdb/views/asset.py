@@ -5,7 +5,7 @@ from base.views import BaseModelViewSet
 from base.response import json_ok_response, json_error_response
 from ..models import Asset, AssetBind
 from ..serializers import AssetSerializer
-
+from base.base_pagination import NewPagination
 # from ..verify.check_data import check_data
 from ..verify.check_data import check_data
 from ..verify.operate import OperateInstance
@@ -40,16 +40,16 @@ class AssetViewSet(BaseModelViewSet):
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
         if page is not None:
+            print('ssss')
             serializer = self.get_serializer(page, many=True)
-            data = {
+            return self.get_paginated_response({
                 'data': serializer.data,
                 'fields': classify_field_obj.fields,
                 'rules': classify_field_obj.rules,
                 'patent_classify_name': classify_field_obj.classify.pid.name,
                 'classify_name': classify_field_obj.classify.name,
                 'classify_id': classify_field_obj.classify.id,
-            }
-            return self.get_paginated_response(data)
+            })
 
         serializer = self.get_serializer(queryset, many=True)
         data = {

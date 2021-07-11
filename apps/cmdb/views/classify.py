@@ -17,6 +17,8 @@ class ClassifyViewSet(BaseModelViewSet):
     filter_fields = ('id', 'name', 'pid', 'ban_bind')
     search_fields = ('name',)
 
+
+
     def create(self, request, *args, **kwargs):
         data = request.data
         pid = data.get('pid')
@@ -205,8 +207,9 @@ class ClassifyViewSet(BaseModelViewSet):
         queryset = self.filter_queryset(self.get_queryset()).filter(pid=None)
         page = self.paginate_queryset(queryset)
         if page is not None:
+            print('page')
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
-
+        print('node')
         serializer = self.get_serializer(queryset, many=True)
         return json_ok_response(serializer.data)
