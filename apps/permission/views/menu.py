@@ -1,6 +1,5 @@
 import json
 
-from django.forms import model_to_dict
 from rest_framework.decorators import action
 
 from base.views import BaseModelViewSet
@@ -35,33 +34,41 @@ class MenuViewSet(BaseModelViewSet):
             children_queryset = self.get_queryset().filter(pid=p_queryset)
             menu['children'] = self.__format_res(self.get_serializer(children_queryset, many=True).data, many=True)
             t_l.append(menu)
-        print(t_l)
 
-        return json_ok_response(t_l)
+        return json_ok_response(self.__sorted(t_l))
 
     def __format_res(self, data, many):
         if not many:
-            res_dic = {
-                'path': data['path'],
-                'component': data['component'],
-                'name': data['name'],
-                'redirect': data['redirect'],
-                'hidden': data['hidden'],
-                'alwaysShow': data['always_show'],
-                'meta': {
-                    'title': data['title'],
-                    'roles': data['roles'],
-                    'icon': data['icon'],
-                    'noCache': data['no_cache'],
-                    'breadcrumb': data['breadcrumb'],
-                    'affix': data['affix'],
+            if data['name']:
+                res_dic = {
+                    'order': data['order'],
+                    'path': data['path'],
+                    'component': data['component'],
+                    'name': data['name'],
+                    'redirect': data['redirect'],
+                    'hidden': data['hidden'],
+                    'alwaysShow': data['always_show'],
+                    'meta': {
+                        'title': data['title'],
+                        'roles': data['roles'],
+                        'icon': data['icon'],
+                        'noCache': data['no_cache'],
+                        'breadcrumb': data['breadcrumb'],
+                        'affix': data['affix'],
+                    }
                 }
-            }
+            else:
+                res_dic = {
+                    'order': data['order'],
+                    'path': data['path'],
+                    'component': data['component'],
+                }
             return res_dic
         else:
             res_list = []
             for item in json.loads(json.dumps(data)):
                 res_dic = {
+                    'order': item['order'],
                     'path': item['path'],
                     'component': item['component'],
                     'name': item['name'],
@@ -81,3 +88,12 @@ class MenuViewSet(BaseModelViewSet):
                     res_dic['meta'] = item['active_menu']
                 res_list.append(res_dic)
             return res_list
+
+    def __sorted(self, data):
+
+        new_data = sorted(data, key=lambda x: x['order'])
+
+        for item_dic in new_data:
+            item_dic['children'] = [] if not item_dic.get('children') else sorted(item_dic['children'],
+                                                                                  key=lambda x: x['order'])
+        return new_data

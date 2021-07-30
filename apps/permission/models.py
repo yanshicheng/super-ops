@@ -60,12 +60,12 @@ class Rule(BaseModel):
 
 
 class Menu(BaseModel):
-    order = models.IntegerField(verbose_name='子菜单排序', blank=True, null=True)
+    order = models.IntegerField(verbose_name='子菜单排序')
     path = models.CharField(verbose_name='路由路径', max_length=64)
-    component = models.CharField(verbose_name='视图路径', max_length=128)
-    name = models.CharField(verbose_name='路由名', max_length=32)
-    title = models.CharField(verbose_name='名称', max_length=32)
-    icon = models.CharField(verbose_name='图标名', max_length=32)
+    component = models.CharField(verbose_name='视图路径', max_length=128, blank=True, null=True)
+    name = models.CharField(verbose_name='路由名', max_length=32, blank=True, null=True)
+    title = models.CharField(verbose_name='名称', max_length=32, blank=True, null=True)
+    icon = models.CharField(verbose_name='图标名', max_length=32, blank=True, null=True)
     redirect = models.CharField(verbose_name='重定向', max_length=128, blank=True, null=True)
     active_menu = models.CharField(verbose_name='详情路由', max_length=128, blank=True, null=True)
     hidden = models.BooleanField(verbose_name='隐藏', default=False)
@@ -73,8 +73,8 @@ class Menu(BaseModel):
     no_cache = models.BooleanField(verbose_name='不缓存', default=False)
     breadcrumb = models.BooleanField(verbose_name='是否在面包屑显示', default=False)
     affix = models.BooleanField(verbose_name='固定', default=False)
-    role = models.ManyToManyField(to=Role, verbose_name='权限角色')
-    pid = models.ForeignKey('self', verbose_name='父节点', on_delete=models.CASCADE, blank=True, null=True)
+    role = models.ManyToManyField(to=Role, verbose_name='权限角色', blank=True,)
+    pid = models.ForeignKey('self', verbose_name='父节点', on_delete=models.CASCADE, blank=True,null=True)
 
     def __str__(self):
         return self.name

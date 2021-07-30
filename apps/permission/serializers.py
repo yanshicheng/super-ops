@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import Role, RuleClassify, Rule, Menu
-from apps.user.serializers import UserProfileSerializer
 
 
 class RoleSerializer(serializers.ModelSerializer):

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'apps.user.apps.UserConfig',
     'apps.permission.apps.PermissionConfig',
     'apps.cmdb.apps.CmdbConfig',
+    'apps.service_tree.apps.ServiceTreeConfig',
 
     # 第三方
     'rest_framework',
@@ -148,9 +149,9 @@ REST_FRAMEWORK = {
     # 自定义异常
     'EXCEPTION_HANDLER': 'base.exceptions.custom_exception_handler',
     # 验证
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
