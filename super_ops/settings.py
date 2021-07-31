@@ -137,6 +137,7 @@ CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:8080',
     'http://152.136.192.185:8080',
     'http://172.21.16.16:8080',
+    'http://demo.superops.top:8080',
 )
 # 是否允许ajax跨域请求时携带cookie，False表示不用，我们后面也用不到cookie，所以关掉它就可以了，以防有人通过cookie来搞我们的网站
 CORS_ALLOW_CREDENTIALS = False
@@ -144,7 +145,8 @@ CORS_ALLOW_CREDENTIALS = False
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "152.136.192.185",
-    "172.21.16.16"
+    "172.21.16.16",
+    "demo.superops.top"
 ]
 
 REST_FRAMEWORK = {
