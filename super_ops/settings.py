@@ -139,6 +139,7 @@ CORS_ORIGIN_WHITELIST = (
     'http://152.136.192.185:80',
     'http://172.21.16.16:8080',
     'http://demo.superops.top:8080',
+    'http://demo.superops.top:8000',
     'http://demo.superops.top:80',
 )
 # 是否允许ajax跨域请求时携带cookie，False表示不用，我们后面也用不到cookie，所以关掉它就可以了，以防有人通过cookie来搞我们的网站
