@@ -142,8 +142,8 @@ CORS_ORIGIN_WHITELIST = (
 CORS_ALLOW_CREDENTIALS = False
 # 防止黑客入侵
 ALLOWED_HOSTS = [
-    "127.0.0.1"
-    "152.136.192.185"
+    "127.0.0.1",
+    "152.136.192.185",
     "172.21.16.16"
 ]
 
