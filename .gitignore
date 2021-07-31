@@ -293,7 +293,7 @@ $RECYCLE.BIN/
 .idea
 __pycache__
 .venv
-logs/*
+
 scripts/*
 celerybeat-schedule.db
 celerybeat-schedule
