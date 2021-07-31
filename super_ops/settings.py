@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # 第三方
     'rest_framework',
     'django_filters',
+    'corsheaders',
 
 ]
 
@@ -136,8 +137,10 @@ CORS_ORIGIN_WHITELIST = (
     # 'www.hippo.cn:8080', #如果这样写不行的话，就加上协议(http://www.hippo.cn:8080，因为不同的corsheaders版本可能有不同的要求)
     'http://127.0.0.1:8080',
     'http://152.136.192.185:8080',
+    'http://152.136.192.185:80',
     'http://172.21.16.16:8080',
     'http://demo.superops.top:8080',
+    'http://demo.superops.top',
 )
 # 是否允许ajax跨域请求时携带cookie，False表示不用，我们后面也用不到cookie，所以关掉它就可以了，以防有人通过cookie来搞我们的网站
 CORS_ALLOW_CREDENTIALS = False
@@ -149,6 +152,29 @@ ALLOWED_HOSTS = [
     "demo.superops.top"
 ]
 
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'XMLHttpRequest',
+    'X_FILENAME',
+    'Pragma',
+]
 REST_FRAMEWORK = {
     # 自定义异常
     'EXCEPTION_HANDLER': 'base.exceptions.custom_exception_handler',
