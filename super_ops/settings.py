@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import datetime
 import os
 from pathlib import Path
+from base.config import get_config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -86,15 +87,12 @@ WSGI_APPLICATION = 'super_ops.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'super_ops',
-        # 'HOST': '127.0.0.1',
-        'HOST': '127.0.0.1',
-        # 'PORT': '35070',
-        'PORT': '3306',
-        'USER': 'root',
-        # 'PASSWORD': 'Mysql.1016',
-        'PASSWORD': '123456',
-        'OPTIONS': {'charset': 'utf8mb4'},
+        'NAME': get_config('mysql.prod', 'MYSQL_DB'),
+        'HOST': get_config('mysql.prod', 'MYSQL_HOST'),
+        'PORT': get_config('mysql.prod', 'MYSQL_PORT'),
+        'USER': get_config('mysql.prod', 'MYSQL_USER'),
+        'PASSWORD': get_config('mysql.prod', 'MYSQL_PASSWORD'),
+        'OPTIONS': {'charset': get_config('mysql.prod', 'MYSQL_CHARSET')},
     }
 }
 
