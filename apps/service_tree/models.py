@@ -86,18 +86,18 @@ class NodeLinkOperaPermission(BaseModel):
         verbose_name_plural = verbose_name
 
 
-class NodeLinkServer(BaseModel):
-    """
-    节点下关联主机
-    """
-    node = models.OneToOneField(to=ServiceTree, on_delete=models.CASCADE, verbose_name='节点')
-
-    # node = models.ForeignKey(to=ServiceTree, on_delete=models.CASCADE, unique=True, verbose_name='节点')
-    # cmdbs = models.ManyToManyField(to=TableData, null=True, blank=True, related_name="link_server")
-
-    class Meta:
-        verbose_name = '节点关联主机'
-        verbose_name_plural = verbose_name
+# class NodeLinkServer(BaseModel):
+#     """
+#     节点下关联主机
+#     """
+#     node = models.OneToOneField(to=ServiceTree, on_delete=models.CASCADE, verbose_name='节点')
+#
+#     # node = models.ForeignKey(to=ServiceTree, on_delete=models.CASCADE, unique=True, verbose_name='节点')
+#     # cmdbs = models.ManyToManyField(to=TableData, null=True, blank=True, related_name="link_server")
+#
+#     class Meta:
+#         verbose_name = '节点关联主机'
+#         verbose_name_plural = verbose_name
 
 
 class NodeJoinTag(BaseModel):

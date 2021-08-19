@@ -24,11 +24,13 @@ urlpatterns = [
 from apps.permission.router import router as prem_router
 from apps.user.router import router as user_router
 from apps.cmdb.router import router as cmdb_router
+from apps.service_tree.router import router as tree_router
 
 router = routers.DefaultRouter()
 router.registry.extend(prem_router.registry)
 router.registry.extend(user_router.registry)
 router.registry.extend(cmdb_router.registry)
+router.registry.extend(tree_router.registry)
 
 urlpatterns += [
     path('api/', include(router.urls)),

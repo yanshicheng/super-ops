@@ -1,4 +1,4 @@
-from .response import json_ok_response
+from .response import json_ok_response, json_error_response
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
@@ -22,13 +22,28 @@ class BaseModelViewSet(ModelViewSet):
         return json_ok_response(response.data)
 
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True)
-        return json_ok_response(serializer.data)
+        try:
+            ordering = request.query_params.get('ordering', '')
+            ordering = ordering.replace('+', '').strip()
+            if ordering:
+                if self.serializer_class is None:
+                    queryset = self.filter_queryset(self.get_serializer_class().Meta.model.objects.order_by(ordering))
+                else:
+                    queryset = self.filter_queryset(self.serializer_class.Meta.model.objects.order_by(ordering))
+            else:
+                queryset = self.filter_queryset(self.get_queryset())
+            page = request.query_params.get('page', '')
+            size = request.query_params.get('size', '')
+            if page or size:
+                page_queryset = self.paginate_queryset(queryset)
+                if page is not None:
+                    serializer = self.get_serializer(page_queryset, many=True)
+                    return self.get_paginated_response(serializer.data)
+            serializer = self.get_serializer(queryset, many=True)
+            return json_ok_response(data=serializer.data)
+        except Exception as e:
+            return json_error_response(message=str(e))
+
 
     def retrieve(self, request, *args, **kwargs):
         response = super(BaseModelViewSet, self).retrieve(request, *args, **kwargs)

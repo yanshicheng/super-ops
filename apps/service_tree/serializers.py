@@ -4,7 +4,7 @@ from rest_framework.exceptions import server_error
 from rest_framework.exceptions import ValidationError
 from .models import ServiceTree
 from .models import NodeLinkOperaPermission
-from .models import NodeLinkServer
+# from .models import NodeLinkServer
 from .models import NodeJoinTag
 
 
@@ -67,18 +67,18 @@ class NodeLinkOperaPermissionModelSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class NodeLinkServerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = NodeLinkServer
-        fields = "__all__"
-
-    def validate(self, attrs):
-        """如果 node 非level=4, 不允许关联节点 触发异常"""
-        # {"node":21,"cmdbs":[3]}
-        node = attrs['node']
-        if node.get_level() != 4:
-            raise ValidationError("Mount server only leaf node.")
-        return attrs
+# class NodeLinkServerSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = NodeLinkServer
+#         fields = "__all__"
+#
+#     def validate(self, attrs):
+#         """如果 node 非level=4, 不允许关联节点 触发异常"""
+#         # {"node":21,"cmdbs":[3]}
+#         node = attrs['node']
+#         if node.get_level() != 4:
+#             raise ValidationError("Mount server only leaf node.")
+#         return attrs
 
 
 class NodeJoinTagSerializer(serializers.ModelSerializer):

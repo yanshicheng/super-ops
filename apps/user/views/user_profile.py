@@ -21,7 +21,6 @@ class UserProfileViewSet(BaseModelViewSet):
     search_fields = ('name',)
     def create(self, request, *args, **kwargs):
         try:
-            print(request.data.get('password'))
             serializer = UserProfileSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             user_obj = serializer.save()

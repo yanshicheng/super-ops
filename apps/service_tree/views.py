@@ -11,11 +11,11 @@ from base.views import BaseModelViewSet
 from .filters import ServiceTreeFilter
 from .models import NodeJoinTag
 from .models import NodeLinkOperaPermission
-from .models import NodeLinkServer
+# from .models import NodeLinkServer
 from .models import ServiceTree
 from .serializers import NodeJoinTagSerializer
 from .serializers import NodeLinkOperaPermissionModelSerializer
-from .serializers import NodeLinkServerSerializer
+# from .serializers import NodeLinkServerSerializer
 from .serializers import ServiceTreeListSerializer
 
 
@@ -41,7 +41,7 @@ class ServiceTreeModelViewSet(BulkCreateModelMixin, BaseModelViewSet):
     def get_queryset(self):
         queryset = super(ServiceTreeModelViewSet, self).get_queryset()
         u = self.request.user
-        if u.username in ["admin", "root"]:
+        if u.username in ["admin", "root", 'devops']:
             return queryset
         
         node_pks = []
@@ -75,7 +75,7 @@ class ServiceTreeModelViewSet(BulkCreateModelMixin, BaseModelViewSet):
                 child['children'] = self.set_children_nodes(child['pk'], qs)
         return children_data
 
-    @action(methods=["get"], detail=True)
+    @action(methods=["get"], detail=True, url_path='opera-permission-member')
     def opera_permission_member(self, request, pk=None):
         ret = {
             "read_member": [],
@@ -108,61 +108,61 @@ class ServiceTreeModelViewSet(BulkCreateModelMixin, BaseModelViewSet):
 
         return json_api_response(code=0, data=ret, message=None)
 
-    @action(methods=["get"], detail=True)
-    def server(self, request, pk=None, *args, **kwargs):
-        """
-        查询节点下所有叶子节点的机器信息
-        /api/v1/service_tree/<pk>/server/?page=1&page_size=100
-        /api/v1/service_tree/<pk>/server/?page=1&page_size=100&hostname=<>&private_ip=<>
-        @param request:
-        @param pk:
-        @return:
-        """
-        is_pagination = False
-
-        page = request.query_params.get('page', 1)
-        page_size = request.query_params.get('page_size', 15)
-        if page:
-            is_pagination = True
-
-        # 当前节点
-        node = self.get_object()
-
-        # 当前节点下所有的叶子节点
-        _nodes = node.get_descendants(include_self=True)
-        _leaf_nodes = [n for n in _nodes if n.is_leaf_node()]
-
-        # OneToOneField
-        cmdb_pks = []
-        for leaf_node in _leaf_nodes:
-            try:
-                link_server = leaf_node.nodelinkserver.cmdbs.all()
-            except:
-                pass
-            else:
-                cmdb_pks.extend([s.pk for s in link_server])
-
-        # # ForeignKey
-        # node_set = []
-        # for leaf_node in _leaf_nodes:
-        #     node_set.extend(leaf_node.nodelinkserver_set.all())
-        # cmdb_pks = []
-        # for s in node_set:
-        #     cmdb_pks.extend([_s.pk for _s in s.cmdbs.all()])
-
-        qs = CMDBBase.objects.filter(pk__in=cmdb_pks, is_deleted=False)
-        qs = self.server_filter(qs, request.query_params)
-        count = qs.count()
-        if is_pagination:
-            start = (int(page) - 1) * int(page_size)
-            stop = start + int(page_size)
-            qs = qs[start:stop]
-
-        response = {
-            "count": count,
-            "results": CMDBBaseModelSerializer(qs, many=True).data
-        }
-        return json_api_response(code=0, data=response, message=None)
+    # @action(methods=["get"], detail=True)
+    # def detail(self, request, pk=None, *args, **kwargs):
+    #     """
+    #     查询节点下所有叶子节点的机器信息
+    #     /api/v1/service_tree/<pk>/server/?page=1&page_size=100
+    #     /api/v1/service_tree/<pk>/server/?page=1&page_size=100&hostname=<>&private_ip=<>
+    #     @param request:
+    #     @param pk:
+    #     @return:
+    #     """
+    #     is_pagination = False
+    #
+    #     page = request.query_params.get('page', 1)
+    #     page_size = request.query_params.get('page_size', 15)
+    #     if page:
+    #         is_pagination = True
+    #
+    #     # 当前节点
+    #     node = self.get_object()
+    #
+    #     # 当前节点下所有的叶子节点
+    #     _nodes = node.get_descendants(include_self=True)
+    #     _leaf_nodes = [n for n in _nodes if n.is_leaf_node()]
+    #
+    #     # OneToOneField
+    #     cmdb_pks = []
+    #     for leaf_node in _leaf_nodes:
+    #         try:
+    #             link_server = leaf_node.nodelinkserver.cmdbs.all()
+    #         except:
+    #             pass
+    #         else:
+    #             cmdb_pks.extend([s.pk for s in link_server])
+    #
+    #     # # ForeignKey
+    #     # node_set = []
+    #     # for leaf_node in _leaf_nodes:
+    #     #     node_set.extend(leaf_node.nodelinkserver_set.all())
+    #     # cmdb_pks = []
+    #     # for s in node_set:
+    #     #     cmdb_pks.extend([_s.pk for _s in s.cmdbs.all()])
+    #
+    #     qs = CMDBBase.objects.filter(pk__in=cmdb_pks, is_deleted=False)
+    #     qs = self.server_filter(qs, request.query_params)
+    #     count = qs.count()
+    #     if is_pagination:
+    #         start = (int(page) - 1) * int(page_size)
+    #         stop = start + int(page_size)
+    #         qs = qs[start:stop]
+    #
+    #     response = {
+    #         "count": count,
+    #         "results": CMDBBaseModelSerializer(qs, many=True).data
+    #     }
+    #     return json_api_response(code=0, data=response, message=None)
 
     @action(methods=["get"], detail=True)
     def tag(self, request, pk=None, *args, **kwargs):
@@ -264,7 +264,6 @@ class NodeOperaPermissionModelViewSet(BaseModelViewSet):
             self.perform_create(serializer)
             return json_api_response(code=0, data=serializer.data, message=None)
 
-        print("data", serializer.data)
         try:
             instance = self.queryset.get(node_id=serializer.data['node'])
         except NodeLinkOperaPermission.DoesNotExist:
@@ -300,47 +299,47 @@ class NodeOperaPermissionModelViewSet(BaseModelViewSet):
         return json_api_response(code=0, data=None, message="删除成功.")
 
 
-class NodeLinkServerModelViewSet(BaseModelViewSet):
-    """
-    服务树 关联服务器
-    """
-    queryset = NodeLinkServer.objects.all()
-    serializer_class = NodeLinkServerSerializer
-    pagination_class = None
-
-    def create(self, request, *args, **kwargs):
-        """
-        如果 node 不存在时，则添加，否则修改
-        """
-        if 'app_key' in request.data:
-
-            try:
-                node = self.queryset.get(node__appkey=request.data['app_key'])
-            except NodeLinkServer.DoesNotExist:
-                return json_api_response(code=-1, data=None, message="app_key not found.")
-
-            request_data = {
-                "node": node.node_id,
-                "cmdbs": request.data['cmdbs'],
-            }
-        else:
-            request_data = request.data
-
-        serializer = self.get_serializer(data=request_data)
-        if serializer.is_valid():
-            self.perform_create(serializer)
-            return json_api_response(code=0, data=serializer.data, message=None)
-        else:
-            try:
-                instance = self.queryset.get(node_id=serializer.data['node'])
-            except NodeLinkServer.DoesNotExist:
-                return json_api_response(code=-1, data=None, message="not found.")
-
-            partial = kwargs.pop('partial', True)
-            s = self.get_serializer(instance, data=request_data, partial=partial)
-            s.is_valid(raise_exception=True)
-            instance.cmdbs.add(*serializer.data['cmdbs'])
-            return json_api_response(code=0, data=serializer.data, message=None)
+# class NodeLinkServerModelViewSet(BaseModelViewSet):
+#     """
+#     服务树 关联服务器
+#     """
+#     queryset = NodeLinkServer.objects.all()
+#     serializer_class = NodeLinkServerSerializer
+#     pagination_class = None
+#
+#     def create(self, request, *args, **kwargs):
+#         """
+#         如果 node 不存在时，则添加，否则修改
+#         """
+#         if 'app_key' in request.data:
+#
+#             try:
+#                 node = self.queryset.get(node__appkey=request.data['app_key'])
+#             except NodeLinkServer.DoesNotExist:
+#                 return json_api_response(code=-1, data=None, message="app_key not found.")
+#
+#             request_data = {
+#                 "node": node.node_id,
+#                 "cmdbs": request.data['cmdbs'],
+#             }
+#         else:
+#             request_data = request.data
+#
+#         serializer = self.get_serializer(data=request_data)
+#         if serializer.is_valid():
+#             self.perform_create(serializer)
+#             return json_api_response(code=0, data=serializer.data, message=None)
+#         else:
+#             try:
+#                 instance = self.queryset.get(node_id=serializer.data['node'])
+#             except NodeLinkServer.DoesNotExist:
+#                 return json_api_response(code=-1, data=None, message="not found.")
+#
+#             partial = kwargs.pop('partial', True)
+#             s = self.get_serializer(instance, data=request_data, partial=partial)
+#             s.is_valid(raise_exception=True)
+#             instance.cmdbs.add(*serializer.data['cmdbs'])
+#             return json_api_response(code=0, data=serializer.data, message=None)
 
 
 class NodeLinkTagModelViewSet(BaseModelViewSet):
@@ -353,28 +352,28 @@ class NodeLinkTagModelViewSet(BaseModelViewSet):
     pagination_class = None
 
 
-class UnlinkNodeServerApiView(BaseApiView):
-    """
-    从服务树解绑Server
-    delete /api/v1/service_tree/unlink/<node_id>/
-    {
-        "server_ids": [1, 2, 3]  # cmdb的id
-    }
-    """
-
-    def delete(self, request, *args, **kwargs):
-        data = request.data
-        node_id = kwargs['pk']
-        server_ids = data['server_ids']
-
-        try:
-            node_link_server = NodeLinkServer.objects.get(node_id=node_id)
-        except NodeLinkServer.DoesNotExist:
-            return json_api_response(code=-1, data=None, message=f"node_id {node_id} not found.")
-
-        instances = CMDBBase.objects.filter(pk__in=server_ids)
-        node_link_server.cmdbs.remove(*[x.pk for x in instances])
-        return json_api_response(code=0, data=None, message=None)
+# class UnlinkNodeServerApiView(BaseApiView):
+#     """
+#     从服务树解绑Server
+#     delete /api/v1/service_tree/unlink/<node_id>/
+#     {
+#         "server_ids": [1, 2, 3]  # cmdb的id
+#     }
+#     """
+#
+#     def delete(self, request, *args, **kwargs):
+#         data = request.data
+#         node_id = kwargs['pk']
+#         server_ids = data['server_ids']
+#
+#         try:
+#             node_link_server = NodeLinkServer.objects.get(node_id=node_id)
+#         except NodeLinkServer.DoesNotExist:
+#             return json_api_response(code=-1, data=None, message=f"node_id {node_id} not found.")
+#
+#         instances = CMDBBase.objects.filter(pk__in=server_ids)
+#         node_link_server.cmdbs.remove(*[x.pk for x in instances])
+#         return json_api_response(code=0, data=None, message=None)
 
 
 class ParentNodeInfoApiView(BaseApiView):

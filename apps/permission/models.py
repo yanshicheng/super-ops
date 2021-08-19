@@ -1,7 +1,7 @@
 from base.models import BaseModel
 from django.db import models
 
-__all__ = ['Role', 'Rule', 'RuleClassify']
+__all__ = ['Role', 'Rule', ]
 
 
 class Role(BaseModel):
@@ -25,22 +25,23 @@ class Role(BaseModel):
         verbose_name = verbose_name_plural = '角色'
 
 
-class RuleClassify(BaseModel):
-    """ 权限分类 """
-    name = models.CharField(verbose_name='名称', help_text='分类名', max_length=120, unique=True)
-
-    class Meta:
-        db_table = 'prem_rule_classify'
-        unique_together = ('name',)
-        verbose_name = verbose_name_plural = '角色'
+# class RuleClassify(BaseModel):
+#     """ 权限分类 """
+#     pass
+    # name = models.CharField(verbose_name='名称', help_text='分类名', max_length=120, unique=True)
+    #
+    # class Meta:
+    #     db_table = 'prem_rule_classify'
+    #     unique_together = ('name',)
+    #     verbose_name = verbose_name_plural = '角色'
 
 
 class Rule(BaseModel):
     """API权限"""
-    name = models.CharField(verbose_name='名称', help_text='名称', max_length=256)
-    path = models.CharField(max_length=128, verbose_name='api路径', unique=True)
-    method = models.CharField(max_length=128, verbose_name='请求方法')
-    rule_classify = models.ForeignKey(to=RuleClassify, on_delete=models.CASCADE)
+    name = models.CharField(verbose_name='名称', help_text='名称', max_length=64)
+    path = models.CharField(max_length=128, verbose_name='api路径', blank=True, null=True )
+    method = models.CharField(max_length=128, verbose_name='请求方法', blank=True, null=True)
+    pid = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -56,7 +57,6 @@ class Rule(BaseModel):
     class Meta:
         db_table = 'prem_rules'
         verbose_name_plural = verbose_name = '权限规则'
-        unique_together = ('name', 'path', 'method')
 
 
 class Menu(BaseModel):
@@ -73,8 +73,8 @@ class Menu(BaseModel):
     no_cache = models.BooleanField(verbose_name='不缓存', default=False)
     breadcrumb = models.BooleanField(verbose_name='是否在面包屑显示', default=False)
     affix = models.BooleanField(verbose_name='固定', default=False)
-    role = models.ManyToManyField(to=Role, verbose_name='权限角色', blank=True,)
-    pid = models.ForeignKey('self', verbose_name='父节点', on_delete=models.CASCADE, blank=True,null=True)
+    role = models.ManyToManyField(to=Role, verbose_name='权限角色', blank=True, )
+    pid = models.ForeignKey('self', verbose_name='父节点', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.name

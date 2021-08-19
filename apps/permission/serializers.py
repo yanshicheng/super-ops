@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Role, RuleClassify, Rule, Menu
+from .models import Role, Rule, Menu
 
 
 class RoleSerializer(serializers.ModelSerializer):
@@ -8,10 +8,7 @@ class RoleSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class RuleClassifySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RuleClassify
-        fields = '__all__'
+
 
 
 class RuleSerializer(serializers.ModelSerializer):

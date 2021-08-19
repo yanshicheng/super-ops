@@ -13,7 +13,6 @@ import datetime
 import os
 from pathlib import Path
 from base.config import get_config
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -144,6 +143,7 @@ CORS_ORIGIN_WHITELIST = (
     'http://demo.superops.top:8000',
     'http://demo.superops.top:9000',
     'http://demo.superops.top:80',
+    'http://demo.superops.top',
 )
 # 是否允许ajax跨域请求时携带cookie，False表示不用，我们后面也用不到cookie，所以关掉它就可以了，以防有人通过cookie来搞我们的网站
 CORS_ALLOW_CREDENTIALS = False
@@ -182,9 +182,10 @@ REST_FRAMEWORK = {
     # 自定义异常
     'EXCEPTION_HANDLER': 'base.exceptions.custom_exception_handler',
     # 验证
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+        'apps.permission.utils.verify.ApiRBACPermission'
+    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
@@ -211,3 +212,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'upload')
 MEDIA_URL = '/media/'
 
 AUTH_USER_MODEL = "user.UserProfile"
+
+
+# 权限白名单
+VALID_URL_LIST = [
+    '/admin/',
+    '/api/v1/user/info/',
+    '/api/v1/user/logout/',
+    '/api/v1/prem/menu/tree/',
+    '/docs/',
+    '/api/v1/user/user-profile/1/'
+]

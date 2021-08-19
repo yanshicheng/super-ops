@@ -1,6 +1,6 @@
 from .models import ServiceTree
 from .models import NodeJoinTag
-from .models import NodeLinkServer
+# from .models import NodeLinkServer
 from .models import NodeLinkOperaPermission
 
 from django.contrib import admin
@@ -11,7 +11,7 @@ from mptt.admin import MPTTModelAdmin
 
 
 @admin.register(ServiceTree)
-class ServiceTreeAdmin(MPTTModelAdmin):
+class ServiceTreeAdmin(admin.ModelAdmin):
     readonly_fields = ('appkey', "abspath")
 
 
@@ -36,13 +36,13 @@ class NodeOwnerAdmin(admin.ModelAdmin):
     write_member_custom.short_description = "写权限"
 
 
-@admin.register(NodeLinkServer)
-class NodeLinkServerAdmin(admin.ModelAdmin):
-    list_display = (
-        "pk",
-        "node",
-        # "cmdbs_custom",
-    )
+# @admin.register(NodeLinkServer)
+# class NodeLinkServerAdmin(admin.ModelAdmin):
+#     list_display = (
+#         "pk",
+#         "node",
+#         # "cmdbs_custom",
+#     )
 
     # filter_horizontal = ('cmdbs',)
     #

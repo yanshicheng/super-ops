@@ -1,5 +1,5 @@
 from rest_framework.views import exception_handler
-
+from base.response import json_error_response
 
 def custom_exception_handler(exc, context):
     """自定义异常"""
@@ -9,11 +9,6 @@ def custom_exception_handler(exc, context):
             message = response.data[0]
         else:
             message = response.data.get('detail') if response.data.get('detail') else response.data
-
-        notification_response = dict()
-        notification_response['code'] = -1
-        notification_response['message'] = message
-        notification_response['data'] = None
-        response.data = notification_response
-    print(response.data)
-    return response
+    else:
+        message = None
+    return json_error_response(message)
