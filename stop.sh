@@ -1,0 +1,1 @@
+uwsgi --stop run/super_ops.pid
