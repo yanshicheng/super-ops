@@ -4,7 +4,8 @@ from rest_framework.exceptions import server_error
 from rest_framework.exceptions import ValidationError
 from .models import ServiceTree
 from .models import NodeLinkOperaPermission
-# from .models import NodeLinkServer
+from .models import NodeLinkClassify
+from .models import NodeLinkAsset
 from .models import NodeJoinTag
 
 
@@ -85,3 +86,28 @@ class NodeJoinTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = NodeJoinTag
         fields = "__all__"
+
+
+class NodeLinkClassifySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NodeLinkClassify
+        fields = "__all__"
+
+    def to_representation(self, instance):
+        representation = super(NodeLinkClassifySerializer, self).to_representation(instance)
+        representation['node_name'] = instance.node.name
+        representation['classify_name'] = instance.classify.name
+        return representation
+
+
+
+class NodeLinkAssetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NodeLinkAsset
+        fields = "__all__"
+
+    # def to_representation(self, instance):
+    #     representation = super(NodeLinkAssetSerializer, self).to_representation(instance)
+    #     representation['node_name'] = instance.node.name
+    #     representation['classify_name'] = instance.classify.name
+    #     return representation

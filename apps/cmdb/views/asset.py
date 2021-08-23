@@ -40,7 +40,6 @@ class AssetViewSet(BaseModelViewSet):
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
         if page is not None:
-            print('ssss')
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response({
                 'data': serializer.data,
@@ -220,7 +219,9 @@ class AssetViewSet(BaseModelViewSet):
 
     @action(methods=['get'], detail=False)
     def search(self, request, *args, **kwargs):
-
+        search_info = request.query_params.get('search')
+        if not search_info:
+            return json_error_response('必须输入查询内容才可进行查询搜索.')
         queryset = self.filter_queryset(self.get_queryset())
 
         serializer = self.get_serializer(queryset, many=True)

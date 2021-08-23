@@ -1,6 +1,6 @@
 from base.models import BaseModel
 from apps.user.models import UserProfile
-
+from apps.cmdb.models import Classify, Asset
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 
@@ -86,19 +86,38 @@ class NodeLinkOperaPermission(BaseModel):
         verbose_name_plural = verbose_name
 
 
-# class NodeLinkServer(BaseModel):
-#     """
-#     节点下关联主机
-#     """
-#     node = models.OneToOneField(to=ServiceTree, on_delete=models.CASCADE, verbose_name='节点')
-#
-#     # node = models.ForeignKey(to=ServiceTree, on_delete=models.CASCADE, unique=True, verbose_name='节点')
-#     # cmdbs = models.ManyToManyField(to=TableData, null=True, blank=True, related_name="link_server")
-#
-#     class Meta:
-#         verbose_name = '节点关联主机'
-#         verbose_name_plural = verbose_name
+class NodeLinkClassify(BaseModel):
+    """
+    节点下关联CMDB类型
+    """
+    node = models.ForeignKey(to=ServiceTree, on_delete=models.CASCADE, verbose_name='节点')
+    classify = models.ForeignKey(to=Classify, on_delete=models.CASCADE, blank=True, null=True,
+                                 related_name="link_classify")
 
+    class Meta:
+        unique_together = ("node", "classify")
+        verbose_name = '节点关联CMDB类型'
+        verbose_name_plural = verbose_name
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.node:
+            if self.node.level != 4:
+                raise ValueError("当前节点禁止操作!")
+        return super(NodeLinkClassify, self).save(force_insert=False, force_update=False, using=None,
+                                                  update_fields=None)
+
+
+class NodeLinkAsset(BaseModel):
+    """
+    节点下关联CMDB资产
+    """
+    node_link = models.ForeignKey(to=ServiceTree, on_delete=models.CASCADE, verbose_name='关联表')
+    asset = models.ForeignKey(to=Asset, blank=True, on_delete=models.CASCADE, related_name="link_asset")
+
+    class Meta:
+        unique_together = ("node_link", "asset")
+        verbose_name = '节点关联CMDB资产'
+        verbose_name_plural = verbose_name
 
 class NodeJoinTag(BaseModel):
     """

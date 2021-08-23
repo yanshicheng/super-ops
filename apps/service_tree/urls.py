@@ -1,5 +1,5 @@
 from django.urls import path, re_path
-from . import views
+from .views import views
 
 urlpatterns = [
     re_path("^service-tree/genres/$", views.show_genres),
